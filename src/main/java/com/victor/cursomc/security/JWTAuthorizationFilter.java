@@ -31,8 +31,9 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter{
 		
 		String header = request.getHeader("Authorization");
 		
-		if(header != null && header.startsWith("Bearer ")); 
+		if(header != null && header.startsWith("Bearer "))
 		{
+			System.out.println("header" +header);
 			UsernamePasswordAuthenticationToken auth = getAuthentication(header.substring(7));
 			if(auth != null) 
 			{
