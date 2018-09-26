@@ -20,8 +20,6 @@ public class CursomcApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception { 
-		imageService.uploadFile("C:\\Users\\Victor Santos\\Pictures\\Perfil de usuário\\maria.jpg");
-		 
-	      
+		//imageService.uploadFile("C:\\Users\\Victor Santos\\Pictures\\Perfil de usuário\\maria.jpg");
 	}
 }

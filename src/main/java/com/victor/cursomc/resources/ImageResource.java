@@ -21,7 +21,7 @@ public class ImageResource {
 	@RequestMapping(method=RequestMethod.POST)
 	public ResponseEntity<Void> upload(@RequestParam("file") MultipartFile file)
 	{
-		imageService.uploadFile(file.getOriginalFilename());
+		imageService.uploadFile(file);
 		return ResponseEntity.noContent().build();
 	}
 	

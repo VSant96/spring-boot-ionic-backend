@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.victor.cursomc.domain.Cidade;
 import com.victor.cursomc.domain.Cliente;
@@ -38,6 +39,9 @@ public class ClienteService {
 	
 	@Autowired
 	private BCryptPasswordEncoder pe;
+	
+	@Autowired
+	private ImageService imageService;
 	
 	public Cliente find(Integer id) 
 	{
@@ -118,5 +122,9 @@ public class ClienteService {
 		return cli;
 	}
 
+	public String uploadProfilePicture(MultipartFile multipartFile) 
+	{
+		return imageService.uploadFile(multipartFile);
+	}
 
 }
