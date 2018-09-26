@@ -39,6 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final String[] PUBLIC_MATCHERS = {
 			"/h2-console/**",
+			"/images/**"
 			};
 	
 	private static final String[] PUBLIC_MATCHERS_GET = {
