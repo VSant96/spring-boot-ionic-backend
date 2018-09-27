@@ -4,21 +4,16 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FilenameUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.imgscalr.Scalr;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.victor.cursomc.services.exceptions.FileException;
@@ -27,54 +22,7 @@ import com.victor.cursomc.services.exceptions.FileException;
 @Service
 public class ImageService {
 	
-	@Value("${pathDBImages}")
-	private String dbImagesPath;
 	
-	private Logger LOG = LoggerFactory.getLogger(ImageService.class);
-	
-	public ImageService() 
-	{
-	}
-	
-	public String uploadFile(MultipartFile multipartFile) 
-	{
-		try {
-			String filename = multipartFile.getOriginalFilename();
-			InputStream is = multipartFile.getInputStream();
-			String contentType = multipartFile.getContentType();
-			
-			return uploadFile(is, filename, contentType);
-			
-		} catch (IOException e) {
-			throw new FileException("Erro IO: " + e.getMessage());
-		}
-	}
-	
-	public String uploadFile(InputStream is, String filename, String contentType) 
-	{
-		
-		try {
-			LOG.info("Iniciando o upload ...");
-			
-			//cria o diretório caso não exista
-			new File(dbImagesPath).mkdirs();	
-			
-			String newFilename = dbImagesPath + filename;
-			
-			FileOutputStream out = new FileOutputStream(newFilename);
-			byte [] bytes = StreamUtils.copyToByteArray(is);
-			
-			out.write(bytes);
-			out.close();
-			
-			LOG.info("Upload finalizado");
-			
-			return newFilename;
-			
-		} catch (IOException e) {
-			throw new RuntimeException("Erro ao realizar o upload!");
-		}
-	}
 	
 	public BufferedImage getJpgImageFromFile(MultipartFile uploadedFile) 
 	{
@@ -113,4 +61,21 @@ public class ImageService {
 		}
 	}
 	
+	
+	public BufferedImage cropSquare(BufferedImage src) 
+	{
+		int min = (src.getHeight() <= src.getWidth() ? src.getHeight() : src.getWidth());
+		return Scalr.crop(
+				src,
+				(src.getWidth()/2) - (min/2),
+				(src.getHeight()/2) - (min/2),
+				min,
+				min
+				);
+	}
+	
+	public BufferedImage resize(BufferedImage src, int size) 
+	{
+		return Scalr.resize(src, Scalr.Method.ULTRA_QUALITY, size);
+	}
 }
