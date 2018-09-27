@@ -1,11 +1,17 @@
 package com.victor.cursomc.services;
 
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Paths;
 
+import javax.imageio.ImageIO;
+
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,7 +59,7 @@ public class ImageService {
 			//cria o diretório caso não exista
 			new File(dbImagesPath).mkdirs();	
 			
-			String newFilename = dbImagesPath + Paths.get(filename).getFileName().toString();
+			String newFilename = dbImagesPath + filename;
 			
 			FileOutputStream out = new FileOutputStream(newFilename);
 			byte [] bytes = StreamUtils.copyToByteArray(is);
@@ -67,6 +73,43 @@ public class ImageService {
 			
 		} catch (IOException e) {
 			throw new RuntimeException("Erro ao realizar o upload!");
+		}
+	}
+	
+	public BufferedImage getJpgImageFromFile(MultipartFile uploadedFile) 
+	{
+		String ext = FilenameUtils.getExtension(uploadedFile.getOriginalFilename());
+		if(!"png".equals(ext) && !"jpg".equals(ext)) 
+		{
+			throw new FileException("Somente imagens PNG e JPG são permitidas");
+		}
+		try {
+			BufferedImage img = ImageIO.read(uploadedFile.getInputStream());
+			if("png".equals(ext)) 
+			{
+				img = pngToJpg(img);
+			}
+			return img;
+		} catch (IOException e) {
+			throw new FileException("Erro ao ler arquivo");
+		}
+	}
+
+	public BufferedImage pngToJpg(BufferedImage img) {
+		BufferedImage jpgImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
+		jpgImage.createGraphics().drawImage(img, 0, 0, Color.WHITE, null);
+		return jpgImage;
+	}
+	
+	public InputStream getInputStream(BufferedImage image, String ext) 
+	{
+		try {
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			ImageIO.write(image, ext, os);
+			return new ByteArrayInputStream(os.toByteArray());
+			
+		} catch (IOException e) {
+			throw new FileException("Erro ao ler o arquivo");
 		}
 	}
 	

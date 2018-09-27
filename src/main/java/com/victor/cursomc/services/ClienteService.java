@@ -1,11 +1,13 @@
 package com.victor.cursomc.services;
 
+import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,6 +44,9 @@ public class ClienteService {
 	
 	@Autowired
 	private ImageService imageService;
+	
+	@Value("${img.prefix.client.profile}")
+	private String prefix;
 	
 	public Cliente find(Integer id) 
 	{
@@ -130,15 +135,11 @@ public class ClienteService {
 			throw new AuthorizationException("Acesso negado!");
 		}
 		
-		String imageUrl = imageService.uploadFile(multipartFile);
+		BufferedImage jpgImage = imageService.getJpgImageFromFile(multipartFile);
+		String filename = prefix + userSS.getId() + ".jpg";
 		
-		Cliente cli = find(userSS.getId());
+		return imageService.uploadFile(imageService.getInputStream(jpgImage, "jpg"), filename, "jpg");
 		
-		cli.setImageUrl(imageUrl);
-		
-		repo.save(cli);
-		
-		return imageUrl;
 	}
 
 }
