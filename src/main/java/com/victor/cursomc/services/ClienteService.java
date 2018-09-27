@@ -124,7 +124,21 @@ public class ClienteService {
 
 	public String uploadProfilePicture(MultipartFile multipartFile) 
 	{
-		return imageService.uploadFile(multipartFile);
+		UserSS userSS = UserService.authenticated();
+		if(userSS == null) 
+		{
+			throw new AuthorizationException("Acesso negado!");
+		}
+		
+		String imageUrl = imageService.uploadFile(multipartFile);
+		
+		Cliente cli = find(userSS.getId());
+		
+		cli.setImageUrl(imageUrl);
+		
+		repo.save(cli);
+		
+		return imageUrl;
 	}
 
 }

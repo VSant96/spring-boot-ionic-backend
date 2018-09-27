@@ -90,8 +90,7 @@ public class ClienteResource {
 	@RequestMapping(value = "/picture", method = RequestMethod.POST)
 	public ResponseEntity<Void> uploadProfilePicture(@RequestParam(name="file") MultipartFile file)
 	{ 
-		String bdPath = service.uploadProfilePicture(file);
-		System.out.println(bdPath);
-		return ResponseEntity.noContent().build();
+		service.uploadProfilePicture(file);
+		return ResponseEntity.ok().build();
 	}
 }
