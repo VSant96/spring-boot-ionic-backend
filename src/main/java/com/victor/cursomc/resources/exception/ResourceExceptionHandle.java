@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.victor.cursomc.services.exceptions.AuthorizationException;
 import com.victor.cursomc.services.exceptions.DataIntegrityException;
+import com.victor.cursomc.services.exceptions.FileException;
 import com.victor.cursomc.services.exceptions.ObjectNotFoundException;
-import com.victor.cursomc.services.exceptions.StorageFileNotFoundException;
 
 @ControllerAdvice
 public class ResourceExceptionHandle {
@@ -49,9 +49,9 @@ public class ResourceExceptionHandle {
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
 	}
 	
-    @ExceptionHandler(StorageFileNotFoundException.class)
-    public ResponseEntity<?> handleStorageFileNotFound(StorageFileNotFoundException exc) {
-        return ResponseEntity.notFound().build();
+    @ExceptionHandler(FileException.class)
+    public ResponseEntity<FileException> file(FileException err) {
+    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
-	
+    
 }

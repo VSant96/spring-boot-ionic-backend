@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.victor.cursomc.services.exceptions.FileException;
+
 
 @Service
 public class ImageService {
@@ -38,7 +40,7 @@ public class ImageService {
 			return uploadFile(is, filename, contentType);
 			
 		} catch (IOException e) {
-			throw new RuntimeException("Erro ao carregar o arquivo!");
+			throw new FileException("Erro IO: " + e.getMessage());
 		}
 	}
 	
